@@ -6,8 +6,11 @@
 	"mixins": [
 		"ArmorFeatureRendererMixin",
 		"ElytraFeatureRendererMixin",
-		"SaddleFeatureRendererMixin"
+		"SaddleFeatureRendererMixin",
+		"EntityRendererMixin",
+		"ItemRendererMixin"
 	],
+
 	"injectors": {
 		"defaultRequire": 1
 	}

@@ -21,25 +21,24 @@ public class HiddenArmourClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        // ─── STEP 2: Load existing config (or create defaults) ─────────
+        // Load (or create) config
         HiddenArmourConfig.get();
-        // ───────────────────────────────────────────────────────────────
 
-        // 1) Register “J” for toggling armor
+        // Register “J” to toggle armour visibility
         toggleArmorKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                "key.hiddenarmour.toggle",    // translation key
-                GLFW.GLFW_KEY_J,              // default key: J
-                "category.hiddenarmour"       // translation key for the category
+                "key.hiddenarmour.toggle",   // translation key
+                GLFW.GLFW_KEY_J,             // default: J
+                "category.hiddenarmour"      // translation key for key-bind category
         ));
 
-        // 2) Register “U” for opening our settings GUI
+        // Register “U” to open the settings screen
         openGuiKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                "key.hiddenarmour.openGui",   // translation key
-                GLFW.GLFW_KEY_U,              // default key: U
-                "category.hiddenarmour"       // same category
+                "key.hiddenarmour.openGui",  // translation key
+                GLFW.GLFW_KEY_U,             // default: U
+                "category.hiddenarmour"
         ));
 
-        // 3) Every tick, check if either was pressed
+        // Each client tick, check for presses
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             // Toggle armour hide
             while (toggleArmorKey.wasPressed()) {
@@ -54,7 +53,6 @@ public class HiddenArmourClient implements ClientModInitializer {
 
             // Open the settings screen
             while (openGuiKey.wasPressed()) {
-                // Use MinecraftClient.getInstance() in case `client` is shadowed
                 MinecraftClient.getInstance().setScreen(new HiddenArmourScreen());
             }
         });
