@@ -1,26 +1,26 @@
 {
-  "category.hiddenarmour": "Hidden Armour",
+  "key.category.minecraft.hiddenarmour": "Hidden Armour",
   "key.hiddenarmour.toggle": "Toggle Armour Visibility",
   "key.hiddenarmour.enable": "Enable Hidden Armour",
   "key.hiddenarmour.disable": "Disable Hidden Armour",
   "key.hiddenarmour.openGui": "Open Hidden Armour Settings",
   "screen.hiddenarmour.title": "Hidden Armour Settings",
 
-  "screen.hiddenarmour.category.main":  "Player Render",
+  "screen.hiddenarmour.category.main": "Player Render",
   "screen.hiddenarmour.category.horse": "Horse Render",
 
-  "button.hiddenarmour.toggleArmour.enabled":  "Armour: Hidden",
+  "button.hiddenarmour.toggleArmour.enabled": "Armour: Hidden",
   "button.hiddenarmour.toggleArmour.disabled": "Armour: Shown",
 
-  "button.hiddenarmour.toggleElytra.enabled":  "Elytra included: On",
+  "button.hiddenarmour.toggleElytra.enabled": "Elytra included: On",
   "button.hiddenarmour.toggleElytra.disabled": "Elytra included: Off",
 
-  "button.hiddenarmour.toggleGlint.enabled":   "Glint: Hidden",
-  "button.hiddenarmour.toggleGlint.disabled":  "Glint: Shown",
+  "button.hiddenarmour.toggleGlint.enabled": "Glint: Hidden",
+  "button.hiddenarmour.toggleGlint.disabled": "Glint: Shown",
 
-  "button.hiddenarmour.toggleNameTags.enabled":"Nametags: Hidden",
-  "button.hiddenarmour.toggleNameTags.disabled":"Nametags: Shown",
+  "button.hiddenarmour.toggleNameTags.enabled": "Nametags: Hidden",
+  "button.hiddenarmour.toggleNameTags.disabled": "Nametags: Shown",
 
-  "button.hiddenarmour.toggleHorseArmor.enabled":  "Horse equipment: Hidden",
+  "button.hiddenarmour.toggleHorseArmor.enabled": "Horse equipment: Hidden",
   "button.hiddenarmour.toggleHorseArmor.disabled": "Horse equipment: Shown"
 }

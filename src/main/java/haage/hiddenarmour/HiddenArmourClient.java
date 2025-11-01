@@ -12,11 +12,16 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.text.Text;
 
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
+
 import org.lwjgl.glfw.GLFW;
 
 public class HiddenArmourClient implements ClientModInitializer {
     private KeyBinding toggleArmorKey;
     private KeyBinding openGuiKey;
+
+    private static final KeyBinding.Category HIDDEN_ARMOUR_CATEGORY = KeyBinding.Category
+            .create(Identifier.of("hiddenarmour"));
 
     @Override
     public void onInitializeClient() {
@@ -27,15 +32,13 @@ public class HiddenArmourClient implements ClientModInitializer {
         toggleArmorKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.hiddenarmour.toggle",
                 GLFW.GLFW_KEY_J,
-                "category.hiddenarmour"
-        ));
+                HIDDEN_ARMOUR_CATEGORY));
 
         // Open GUI with U
         openGuiKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.hiddenarmour.openGui",
                 GLFW.GLFW_KEY_U,
-                "category.hiddenarmour"
-        ));
+                HIDDEN_ARMOUR_CATEGORY));
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             // Toggle global hideArmour
@@ -47,8 +50,7 @@ public class HiddenArmourClient implements ClientModInitializer {
                         Text.literal("Armour: ")
                                 .append(Text.literal(cfg.hideArmour ? "Hidden" : "Shown")
                                         .formatted(cfg.hideArmour ? Formatting.GREEN : Formatting.RED)),
-                        true
-                );
+                        true);
 
             }
 
