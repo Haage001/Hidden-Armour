@@ -7,7 +7,7 @@
   "screen.hiddenarmour.title": "Hidden Armour Settings",
 
   "screen.hiddenarmour.category.main": "Player Render",
-  "screen.hiddenarmour.category.horse": "Horse Render",
+  "screen.hiddenarmour.category.horse": "Mob Renders",
 
   "button.hiddenarmour.toggleArmour.enabled": "Armour: Hidden",
   "button.hiddenarmour.toggleArmour.disabled": "Armour: Shown",

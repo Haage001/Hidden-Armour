@@ -1,14 +1,15 @@
 package haage.hiddenarmour.config;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import net.fabricmc.loader.api.FabricLoader;
-
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import net.fabricmc.loader.api.FabricLoader;
 
 public class HiddenArmourConfig {
     // Path to the config file: <minecraft>/config/hiddenarmour.json
@@ -23,6 +24,7 @@ public class HiddenArmourConfig {
     public boolean hideArmour            = false;
     public boolean includeElytra         = false;
     public boolean hideHorseArmor        = false;
+    public boolean hideWolfArmor         = false;
     public boolean hideEnchantmentGlint  = false;
     public boolean hideNameTags          = false;
 
