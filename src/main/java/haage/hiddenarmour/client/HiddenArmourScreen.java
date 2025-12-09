@@ -1,6 +1,8 @@
 // src/main/java/haage/hiddenarmour/client/HiddenArmourScreen.java
 package haage.hiddenarmour.client;
 
+import java.util.List;
+
 import haage.hiddenarmour.config.HiddenArmourConfig;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -9,12 +11,10 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.text.Text;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
-
-import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public class HiddenArmourScreen extends Screen {
@@ -44,7 +44,7 @@ public class HiddenArmourScreen extends Screen {
             yGlint, ySep2, ySub2, yHorse, yWolf, ySep3, yDone;
     private int emojiX, emojiGap;
 
-    private ButtonWidget armourBtn, glintBtn, nameTagBtn, horseBtn, wolfBtn, doneBtn;
+    private ButtonWidget armourBtn, glintBtn, nameTagBtn, horseBtn, wolfBtn, nautilusBtn;
     private TextureButtonWidget helmetBtn, chestBtn, leggingsBtn, bootsBtn, elytraBtn;
 
     public HiddenArmourScreen(Screen parent) {
@@ -106,12 +106,15 @@ public class HiddenArmourScreen extends Screen {
                         .build()
         );
 
+        // Mob render buttons in 2-1 grid layout (Horse and Wolf on top row, Nautilus below)
+        int mobBtnWidth = (PANEL_W - 3*INSET) / 2 - SPACING + 5;
+        
         horseBtn = addDrawableChild(
                 ButtonWidget.builder(getHorseText(), b -> {
                             toggleHorse();
                             horseBtn.setMessage(getHorseText());
                         })
-                        .dimensions(panelX + INSET, yHorse, PANEL_W - 2*INSET, BUTTON_H)
+                        .dimensions(panelX + INSET, yHorse, mobBtnWidth, BUTTON_H)
                         .build()
         );
         wolfBtn = addDrawableChild(
@@ -119,10 +122,18 @@ public class HiddenArmourScreen extends Screen {
                             toggleWolf();
                             wolfBtn.setMessage(getWolfText());
                         })
-                        .dimensions(panelX + INSET, yWolf, PANEL_W - 2*INSET, BUTTON_H)
+                        .dimensions(panelX + INSET + mobBtnWidth + SPACING, yHorse, mobBtnWidth, BUTTON_H)
                         .build()
         );
-        doneBtn = addDrawableChild(
+        nautilusBtn = addDrawableChild(
+                ButtonWidget.builder(getNautilusText(), b -> {
+                            toggleNautilus();
+                            nautilusBtn.setMessage(getNautilusText());
+                        })
+                        .dimensions(panelX + INSET, yWolf, mobBtnWidth, BUTTON_H)
+                        .build()
+        );
+        addDrawableChild(
                 ButtonWidget.builder(Text.translatable("gui.done"),
                                 b -> MinecraftClient.getInstance().setScreen(parent))
                         .dimensions(panelX + INSET, yDone, PANEL_W - 2*INSET, BUTTON_H)
@@ -138,39 +149,39 @@ public class HiddenArmourScreen extends Screen {
         helmetBtn = addDrawableChild(
                 new TextureButtonWidget(emojiX + 0*emojiGap, yIcon, EMOJI_BTN_W, BUTTON_H,
                         HELMET_ENABLED, HELMET_DISABLED,
-                        HiddenArmourConfig.get().isShowHelmet(), b -> {
+                        !HiddenArmourConfig.get().isShowHelmet(), () -> {
                             toggleHelmet();
-                            helmetBtn.setState(HiddenArmourConfig.get().isShowHelmet());
+                            helmetBtn.setState(!HiddenArmourConfig.get().isShowHelmet());
                         })
         );
         chestBtn = addDrawableChild(
                 new TextureButtonWidget(emojiX + 1*emojiGap, yIcon, EMOJI_BTN_W, BUTTON_H,
                         CHEST_ENABLED, CHEST_DISABLED,
-                        HiddenArmourConfig.get().isShowChestplate(), b -> {
+                        !HiddenArmourConfig.get().isShowChestplate(), () -> {
                             toggleChestplate();
-                            chestBtn.setState(HiddenArmourConfig.get().isShowChestplate());
+                            chestBtn.setState(!HiddenArmourConfig.get().isShowChestplate());
                         })
         );
         leggingsBtn = addDrawableChild(
                 new TextureButtonWidget(emojiX + 2*emojiGap, yIcon, EMOJI_BTN_W, BUTTON_H,
                         LEGGINGS_ENABLED, LEGGINGS_DISABLED,
-                        HiddenArmourConfig.get().isShowLeggings(), b -> {
+                        !HiddenArmourConfig.get().isShowLeggings(), () -> {
                             toggleLeggings();
-                            leggingsBtn.setState(HiddenArmourConfig.get().isShowLeggings());
+                            leggingsBtn.setState(!HiddenArmourConfig.get().isShowLeggings());
                         })
         );
         bootsBtn = addDrawableChild(
                 new TextureButtonWidget(emojiX + 3*emojiGap, yIcon, EMOJI_BTN_W, BUTTON_H,
                         BOOTS_ENABLED, BOOTS_DISABLED,
-                        HiddenArmourConfig.get().isShowBoots(), b -> {
+                        !HiddenArmourConfig.get().isShowBoots(), () -> {
                             toggleBoots();
-                            bootsBtn.setState(HiddenArmourConfig.get().isShowBoots());
+                            bootsBtn.setState(!HiddenArmourConfig.get().isShowBoots());
                         })
         );
         elytraBtn = addDrawableChild(
                 new TextureButtonWidget(emojiX + 4*emojiGap, yIcon, EMOJI_BTN_W, BUTTON_H,
                         ELYTRA_ENABLED, ELYTRA_DISABLED,
-                        HiddenArmourConfig.get().includeElytra, b -> {
+                        HiddenArmourConfig.get().includeElytra, () -> {
                             toggleElytra();
                             elytraBtn.setState(HiddenArmourConfig.get().includeElytra);
                         })
@@ -257,7 +268,7 @@ public class HiddenArmourScreen extends Screen {
         }
         if (glintBtn.isHovered()) {
             ctx.drawTooltip(textRenderer,
-                    List.of(Text.literal("Hide enchantment glint on tools and other 2D items")), mx, my);
+                    List.of(Text.literal("Hide enchantment glint on items and armor")), mx, my);
         }
         if (nameTagBtn.isHovered()) {
             ctx.drawTooltip(textRenderer,
@@ -270,6 +281,10 @@ public class HiddenArmourScreen extends Screen {
         if (wolfBtn.isHovered()) {
             ctx.drawTooltip(textRenderer,
                     List.of(Text.literal("Hide wolf armour")), mx, my);
+        }
+        if (nautilusBtn.isHovered()) {
+            ctx.drawTooltip(textRenderer,
+                    List.of(Text.literal("Hide nautilus shell")), mx, my);
         }
     }
 
@@ -344,61 +359,44 @@ public class HiddenArmourScreen extends Screen {
         HiddenArmourConfig.save();
     }
 
-    // ─── EMOJI COLUMN GETTERS & HANDLERS ─────────────────────────────────────
-    private Text getHelmetText() {
-        boolean shown = HiddenArmourConfig.get().isShowHelmet();
-        MutableText txt = Text.literal("⛑: ");
-        return txt.append(Text.literal(shown ? "❌" : "✔")
-                .formatted(shown ? Formatting.RED : Formatting.GREEN));
+    private Text getNautilusText() {
+        boolean hidden = HiddenArmourConfig.get().hideNautilusArmor;
+        MutableText label = Text.literal("Nautilus: ");
+        MutableText value = Text.literal(hidden ? "Hidden" : "Shown")
+                .formatted(hidden ? Formatting.GREEN : Formatting.RED);
+        return label.append(value);
     }
+    private void toggleNautilus() {
+        var c = HiddenArmourConfig.get();
+        c.hideNautilusArmor = !c.hideNautilusArmor;
+        HiddenArmourConfig.save();
+    }
+
+    // ─── TOGGLE HANDLERS ─────────────────────────────────────────────────────
     private void toggleHelmet() {
         var c = HiddenArmourConfig.get();
         c.setShowHelmet(!c.isShowHelmet());
         HiddenArmourConfig.save();
     }
 
-    private Text getChestText() {
-        boolean shown = HiddenArmourConfig.get().isShowChestplate();
-        MutableText txt = Text.literal("👕: ");
-        return txt.append(Text.literal(shown ? "❌" : "✔")
-                .formatted(shown ? Formatting.RED : Formatting.GREEN));
-    }
     private void toggleChestplate() {
         var c = HiddenArmourConfig.get();
         c.setShowChestplate(!c.isShowChestplate());
         HiddenArmourConfig.save();
     }
 
-    private Text getLeggingsText() {
-        boolean shown = HiddenArmourConfig.get().isShowLeggings();
-        MutableText txt = Text.literal("👖: ");
-        return txt.append(Text.literal(shown ? "❌" : "✔")
-                .formatted(shown ? Formatting.RED : Formatting.GREEN));
-    }
     private void toggleLeggings() {
         var c = HiddenArmourConfig.get();
         c.setShowLeggings(!c.isShowLeggings());
         HiddenArmourConfig.save();
     }
 
-    private Text getBootsText() {
-        boolean shown = HiddenArmourConfig.get().isShowBoots();
-        MutableText txt = Text.literal("🥾: ");
-        return txt.append(Text.literal(shown ? "❌" : "✔")
-                .formatted(shown ? Formatting.RED : Formatting.GREEN));
-    }
     private void toggleBoots() {
         var c = HiddenArmourConfig.get();
         c.setShowBoots(!c.isShowBoots());
         HiddenArmourConfig.save();
     }
 
-    private Text getElytraTextEmoji() {
-        boolean shown = !HiddenArmourConfig.get().includeElytra;
-        MutableText txt = Text.literal("🕊: ");
-        return txt.append(Text.literal(shown ? "❌" : "✔")
-                .formatted(shown ? Formatting.RED : Formatting.GREEN));
-    }
     private void toggleElytra() {
         var c = HiddenArmourConfig.get();
         c.includeElytra = !c.includeElytra;

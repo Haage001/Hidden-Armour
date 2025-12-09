@@ -6,9 +6,11 @@
 	"mixins": [
 		"ArmorFeatureRendererMixin",
 		"ElytraFeatureRendererMixin",
+		"EquipmentModelMixin",
 		"SaddleFeatureRendererMixin",
 		"WolfArmorFeatureRendererMixin",
 		"EntityRendererMixin",
+		"LivingEntityRendererMixin",
 		"ItemRendererMixin"
 	],
 

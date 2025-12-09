@@ -14,10 +14,7 @@ import net.minecraft.client.util.math.MatrixStack;
 
 @Mixin(EntityRenderer.class)
 public class EntityRendererMixin {
-    @Inject(method = "renderLabelIfPresent(Lnet/minecraft/client/render/entity/state/EntityRenderState;"
-            + "Lnet/minecraft/client/util/math/MatrixStack;"
-            + "Lnet/minecraft/client/render/command/OrderedRenderCommandQueue;"
-            + "Lnet/minecraft/client/render/state/CameraRenderState;)V", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "renderLabelIfPresent", at = @At("HEAD"), cancellable = true)
     private void onRenderLabelIfPresent(
             EntityRenderState state,
             MatrixStack matrices,

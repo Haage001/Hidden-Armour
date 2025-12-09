@@ -25,8 +25,17 @@ public class SaddleFeatureRendererMixin {
             float limbAngle,
             float limbDistance,
             CallbackInfo ci) {
-        if (HiddenArmourConfig.get().hideHorseArmor) {
-            ci.cancel();
+        // Check if this is a nautilus entity by class name
+        String className = state.getClass().getSimpleName();
+        if (className.contains("Nautilus")) {
+            if (HiddenArmourConfig.get().hideNautilusArmor) {
+                ci.cancel();
+            }
+        } else {
+            // This is a horse/donkey/mule
+            if (HiddenArmourConfig.get().hideHorseArmor) {
+                ci.cancel();
+            }
         }
     }
 }

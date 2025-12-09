@@ -25,6 +25,7 @@ public class HiddenArmourConfig {
     public boolean includeElytra         = false;
     public boolean hideHorseArmor        = false;
     public boolean hideWolfArmor         = false;
+    public boolean hideNautilusArmor     = false;
     public boolean hideEnchantmentGlint  = false;
     public boolean hideNameTags          = false;
 
