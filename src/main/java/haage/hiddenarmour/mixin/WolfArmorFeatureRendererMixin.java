@@ -5,23 +5,23 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import haage.hiddenarmour.config.HiddenArmourConfig;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.render.entity.feature.WolfArmorFeatureRenderer;
-import net.minecraft.client.render.entity.state.WolfEntityRenderState;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.layers.WolfArmorLayer;
+import net.minecraft.client.renderer.entity.state.WolfRenderState;
 
-@Mixin(WolfArmorFeatureRenderer.class)
+@Mixin(WolfArmorLayer.class)
 public class WolfArmorFeatureRendererMixin {
-    @Inject(method = "render(Lnet/minecraft/client/util/math/MatrixStack;"
-            + "Lnet/minecraft/client/render/command/OrderedRenderCommandQueue;"
-            + "ILnet/minecraft/client/render/entity/state/WolfEntityRenderState;"
+    @Inject(method = "submit(Lcom/mojang/blaze3d/vertex/PoseStack;"
+            + "Lnet/minecraft/client/renderer/SubmitNodeCollector;"
+            + "ILnet/minecraft/client/renderer/entity/state/WolfRenderState;"
             + "FF)V", at = @At("HEAD"), cancellable = true)
     private void onRenderWolfArmor(
-            MatrixStack matrices,
-            OrderedRenderCommandQueue queue,
+            PoseStack poseStack,
+            SubmitNodeCollector submitNodeCollector,
             int light,
-            WolfEntityRenderState state,
+            WolfRenderState state,
             float limbAngle,
             float limbDistance,
             CallbackInfo ci) {

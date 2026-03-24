@@ -1,6 +1,6 @@
 package haage.hiddenarmour;
 
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.literal;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import haage.hiddenarmour.config.HiddenArmourConfig;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
 
 public class Hiddenarmour implements ModInitializer {
 	public static final String MOD_ID = "hiddenarmour";
@@ -29,8 +29,8 @@ public class Hiddenarmour implements ModInitializer {
 									.executes(ctx -> {
 										HiddenArmourConfig.get().hideArmour = true;
 										HiddenArmourConfig.save(); // persist change
-										ctx.getSource().sendFeedback(
-												() -> Text.literal("§aHidden armour enabled."),
+										ctx.getSource().sendSuccess(
+												() -> Component.literal("§aHidden armour enabled."),
 												false);
 										return 1;
 									}))
@@ -38,16 +38,16 @@ public class Hiddenarmour implements ModInitializer {
 									.executes(ctx -> {
 										HiddenArmourConfig.get().hideArmour = false;
 										HiddenArmourConfig.save(); // persist change
-										ctx.getSource().sendFeedback(
-												() -> Text.literal("§cHidden armour disabled."),
+										ctx.getSource().sendSuccess(
+												() -> Component.literal("§cHidden armour disabled."),
 												false);
 										return 1;
 									}))
 							.then(literal("status")
 									.executes(ctx -> {
 										boolean enabled = HiddenArmourConfig.get().hideArmour;
-										ctx.getSource().sendFeedback(
-												() -> Text.literal(
+										ctx.getSource().sendSuccess(
+												() -> Component.literal(
 														"Hidden armour is " + (enabled ? "§aENABLED" : "§cDISABLED")),
 												false);
 										return enabled ? 1 : 0;
@@ -58,8 +58,8 @@ public class Hiddenarmour implements ModInitializer {
 											.executes(ctx -> {
 												HiddenArmourConfig.get().includeElytra = true;
 												HiddenArmourConfig.save(); // persist change
-												ctx.getSource().sendFeedback(
-														() -> Text.literal(
+												ctx.getSource().sendSuccess(
+														() -> Component.literal(
 																"§aElytra will now be hidden along with armour."),
 														false);
 												return 1;
@@ -68,8 +68,8 @@ public class Hiddenarmour implements ModInitializer {
 											.executes(ctx -> {
 												HiddenArmourConfig.get().includeElytra = false;
 												HiddenArmourConfig.save(); // persist change
-												ctx.getSource().sendFeedback(
-														() -> Text.literal(
+												ctx.getSource().sendSuccess(
+														() -> Component.literal(
 																"§cElytra will now be shown even when armour is hidden."),
 														false);
 												return 1;
@@ -77,8 +77,8 @@ public class Hiddenarmour implements ModInitializer {
 									.then(literal("status")
 											.executes(ctx -> {
 												boolean inc = HiddenArmourConfig.get().includeElytra;
-												ctx.getSource().sendFeedback(
-														() -> Text.literal(
+												ctx.getSource().sendSuccess(
+														() -> Component.literal(
 																"Elytra hiding is "
 																		+ (inc ? "§aENABLED" : "§cDISABLED")),
 														false);

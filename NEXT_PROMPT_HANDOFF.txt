@@ -1,0 +1,152 @@
+Hidden Armour 26.1 Port Handoff
+
+Workspace:
+- C:\minecraft\mod-making\HiddenArmour\hiddenarmour-1.21.5
+
+Goal:
+- Port this Fabric mod from 1.21.11-era Yarn-style code to Minecraft 26.1-rc-2.
+- Target versions requested by user:
+  - minecraft_version=26.1-rc-2
+  - loader_version=0.18.4
+  - loom_version=1.15-SNAPSHOT
+  - fabric_api_version=0.144.0+26.1
+  - mod_version=2.0.0
+
+What has already been changed:
+
+1. Build/toolchain updates
+- gradle.properties
+  - minecraft_version -> 26.1-rc-2
+  - loader_version -> 0.18.4
+  - loom_version -> 1.15-SNAPSHOT
+  - mod_version -> 2.0.0
+  - fabric_api_version -> 0.144.0+26.1
+  - removed yarn_mappings
+- build.gradle
+  - plugin changed to net.fabricmc.fabric-loom 1.15-SNAPSHOT
+  - removed explicit mappings dependency per 26.1 porting guide
+  - changed modImplementation/modCompileOnly to implementation/compileOnly
+  - updated Fabric API dependency property name
+  - updated Mod Menu compileOnly dependency to 18.0.0-alpha.6
+  - bumped Java release/source/target to 25
+- gradle/wrapper/gradle-wrapper.properties
+  - bumped Gradle wrapper from 8.14 to 9.2.0 because Loom 1.15.5 required Gradle plugin API 9.2.0
+
+2. Metadata updates
+- src/main/resources/fabric.mod.json
+  - loader dependency >= 0.18.4
+  - minecraft dependency >= 26.1-rc-2
+  - java dependency >= 25
+
+3. Porting progress in source
+- Common/client code partially ported from Yarn-style names to official Mojang mappings.
+- Commands switched from net.minecraft.server.command.CommandManager.literal to net.minecraft.commands.Commands.literal.
+- Client keybinding helper switched to Fabric 26.1 rename:
+  - net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper
+- Key binding class switched to net.minecraft.client.KeyMapping.
+- Minecraft client class switched to net.minecraft.client.Minecraft.
+- Text/Component classes moved to net.minecraft.network.chat.Component.
+- Formatting moved to net.minecraft.ChatFormatting.
+- Identifier moved to net.minecraft.resources.Identifier.
+- ItemStack mixin updated from hasGlint to hasFoil.
+
+4. GUI work already done
+- The old custom TextureButtonWidget path was removed because 26.1 UI rendering changed significantly.
+- HiddenArmourScreen was rewritten to use standard Button widgets and 26.1 Screen extraction rendering.
+- This is intentionally simpler than the old icon-button UI so the port can compile first.
+
+5. Mixin retargeting already done
+- ArmorFeatureRendererMixin -> HumanoidArmorLayer
+- ElytraFeatureRendererMixin -> WingsLayer
+- WolfArmorFeatureRendererMixin -> WolfArmorLayer
+- EntityRendererMixin retargeted to shouldShowName
+- Added SimpleEquipmentLayerMixin to replace the old SaddleFeatureRendererMixin path
+  - handles horse/nautilus equipment hiding using EquipmentClientInfo.LayerType
+- Removed these old mixins/files because they no longer matched 26.1 or became redundant:
+  - TextureButtonWidget.java
+  - ItemRendererMixin.java
+  - LivingEntityRendererMixin.java
+  - SaddleFeatureRendererMixin.java
+
+6. Mixin config
+- src/main/resources/hiddenarmour.mixins.json updated
+  - compatibilityLevel -> JAVA_25
+  - removed old mixins that were deleted
+  - added SimpleEquipmentLayerMixin
+
+Current status:
+- The project now gets through configuration and most of the codebase compiles.
+- Current blocker is only 1 compile error.
+
+Current compile command:
+- .\gradlew.bat compileJava
+
+Current compile error:
+- File: src/main/java/haage/hiddenarmour/HiddenArmourClient.java
+- Error:
+  - LocalPlayer has no method displayClientMessage(MutableComponent, boolean)
+
+Exact failing code area:
+- HiddenArmourClient.java currently tries to send the toggle status message to the local player after pressing the keybind.
+
+Likely next fix:
+- Inspect 26.1 LocalPlayer or Player chat/system message methods in official mappings.
+- Replace displayClientMessage(...) with the correct 26.1 equivalent.
+- Candidate APIs to inspect include methods like:
+  - sendSystemMessage(...)
+  - displayClientSystemMessage(...)
+  - any client-only overlay/system message helper on LocalPlayer or Minecraft GUI
+- Do not guess blindly; confirm with javap or compile iteration.
+
+Suggested next sequence:
+1. Fix HiddenArmourClient.java message send call.
+2. Run .\gradlew.bat compileJava again.
+3. If more compile errors appear, continue porting against official mappings.
+4. Once compileJava passes, run a full build:
+   - .\gradlew.bat build
+5. If build passes, test the mod in the dev client.
+6. If runtime mixin failures appear, check exact target signatures in the 26.1 merged deobf jar.
+
+Useful investigation notes from this session:
+- Official deobf jar used for inspection:
+  - C:\Users\olive\.gradle\caches\fabric-loom\minecraftMaven\net\minecraft\minecraft-merged-deobf\26.1-rc-2\minecraft-merged-deobf-26.1-rc-2.jar
+- Player render path in 26.1 appears to use AvatarRenderer and AvatarRenderState.
+- Elytra layer is now WingsLayer.
+- Armor layer is HumanoidArmorLayer.
+- Horse/nautilus equipment appears to route through SimpleEquipmentLayer with EquipmentClientInfo.LayerType values such as:
+  - HORSE_BODY
+  - HORSE_SADDLE
+  - DONKEY_SADDLE
+  - MULE_SADDLE
+  - ZOMBIE_HORSE_SADDLE
+  - SKELETON_HORSE_SADDLE
+  - LLAMA_BODY
+  - NAUTILUS_BODY
+  - NAUTILUS_SADDLE
+- There was no usable PlayerEntityRenderState in 26.1 deobf jar; AvatarRenderState is the player-specific humanoid state.
+
+Files changed in this port so far:
+- gradle.properties
+- build.gradle
+- gradle/wrapper/gradle-wrapper.properties
+- src/main/resources/fabric.mod.json
+- src/main/resources/hiddenarmour.mixins.json
+- src/main/java/haage/hiddenarmour/Hiddenarmour.java
+- src/main/java/haage/hiddenarmour/HiddenArmourClient.java
+- src/main/java/haage/hiddenarmour/client/HiddenArmourScreen.java
+- src/main/java/haage/hiddenarmour/client/HiddenArmourModMenu.java
+- src/main/java/haage/hiddenarmour/mixin/ArmorFeatureRendererMixin.java
+- src/main/java/haage/hiddenarmour/mixin/ElytraFeatureRendererMixin.java
+- src/main/java/haage/hiddenarmour/mixin/EntityRendererMixin.java
+- src/main/java/haage/hiddenarmour/mixin/EquipmentModelMixin.java
+- src/main/java/haage/hiddenarmour/mixin/WolfArmorFeatureRendererMixin.java
+- src/main/java/haage/hiddenarmour/mixin/SimpleEquipmentLayerMixin.java
+
+Files deleted during port:
+- src/main/java/haage/hiddenarmour/client/TextureButtonWidget.java
+- src/main/java/haage/hiddenarmour/mixin/ItemRendererMixin.java
+- src/main/java/haage/hiddenarmour/mixin/LivingEntityRendererMixin.java
+- src/main/java/haage/hiddenarmour/mixin/SaddleFeatureRendererMixin.java
+
+Important constraint:
+- Do not revert the simplified screen rewrite just to preserve the old icon buttons unless the port is already stable. The priority is a working 26.1 build first.

@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.7.1]
+
+### Fixed
+- Fixed horse armor toggle incorrectly affecting nautilus armor
+
+### Known Issues
+- Horse and nautilus armor toggles will hide both saddles and armor together due to Minecraft rendering limitations
+
 ## [1.7.0]
 
 ### Added

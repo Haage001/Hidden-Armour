@@ -2,16 +2,14 @@
 	"required": true,
 	"minVersion": "0.8",
 	"package": "haage.hiddenarmour.mixin",
-	"compatibilityLevel": "JAVA_17",
+	"compatibilityLevel": "JAVA_22",
 	"mixins": [
 		"ArmorFeatureRendererMixin",
 		"ElytraFeatureRendererMixin",
 		"EquipmentModelMixin",
-		"SaddleFeatureRendererMixin",
+		"SimpleEquipmentLayerMixin",
 		"WolfArmorFeatureRendererMixin",
-		"EntityRendererMixin",
-		"LivingEntityRendererMixin",
-		"ItemRendererMixin"
+		"EntityRendererMixin"
 	],
 
 	"injectors": {
