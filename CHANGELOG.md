@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.1.0]
+
+### Added
+- Shield toggle in Player Renders, while not activly blocking (included in global toggle keybind)
+
+### Fixed
+- Nametag hiding now works correctly for players and other living entities.
+
 ## [1.7.1]
 
 ### Fixed

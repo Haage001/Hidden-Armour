@@ -28,6 +28,7 @@ public class HiddenArmourConfig {
     public boolean hideNautilusArmor     = false;
     public boolean hideEnchantmentGlint  = false;
     public boolean hideNameTags          = false;
+    public boolean hideShield            = false;
 
     // Per-piece toggles
     public boolean showHelmet     = false;

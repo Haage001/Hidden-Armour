@@ -11,12 +11,13 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 
 @Environment(EnvType.CLIENT)
 public class HiddenArmourScreen extends Screen {
     private static final int PANEL_W = 210;
-    private static final int PANEL_H = 232;
+    private static final int PANEL_H = 280;
     private static final int INSET = 8;
     private static final int SPACING = 6;
     private static final int BUTTON_H = 20;
@@ -31,6 +32,7 @@ public class HiddenArmourScreen extends Screen {
     private Button horseBtn;
     private Button wolfBtn;
     private Button nautilusBtn;
+    private Button shieldBtn;
     private Button helmetIconBtn;
     private Button chestIconBtn;
     private Button leggingsIconBtn;
@@ -46,6 +48,12 @@ public class HiddenArmourScreen extends Screen {
     private int playerSectionSeparatorY;
     private int bottomSectionSeparatorY;
 
+    private ItemStack helmetIconStack = ItemStack.EMPTY;
+    private ItemStack chestIconStack = ItemStack.EMPTY;
+    private ItemStack leggingsIconStack = ItemStack.EMPTY;
+    private ItemStack bootsIconStack = ItemStack.EMPTY;
+    private ItemStack elytraIconStack = ItemStack.EMPTY;
+
     public HiddenArmourScreen(Screen parent) {
         super(Component.translatable("screen.hiddenarmour.title"));
         this.parent = parent;
@@ -58,6 +66,12 @@ public class HiddenArmourScreen extends Screen {
 
         panelX = (width - PANEL_W) / 2;
         panelY = (height - PANEL_H) / 2;
+        helmetIconStack = createSafeStack(Items.DIAMOND_HELMET);
+        chestIconStack = createSafeStack(Items.DIAMOND_CHESTPLATE);
+        leggingsIconStack = createSafeStack(Items.DIAMOND_LEGGINGS);
+        bootsIconStack = createSafeStack(Items.DIAMOND_BOOTS);
+        elytraIconStack = createSafeStack(Items.ELYTRA);
+
         int buttonWidth = (PANEL_W - (INSET * 2) - SPACING) / 2;
         int fullWidth = PANEL_W - (INSET * 2);
         int leftX = panelX + INSET;
@@ -109,6 +123,12 @@ public class HiddenArmourScreen extends Screen {
             toggleNameTag();
             refreshButtonLabels();
         }).bounds(rightX, y, buttonWidth, BUTTON_H).build());
+
+        y += BUTTON_H + SPACING;
+        shieldBtn = addRenderableWidget(Button.builder(getShieldText(), button -> {
+            toggleShield();
+            refreshButtonLabels();
+        }).bounds(leftX, y, buttonWidth, BUTTON_H).build());
 
         y += BUTTON_H + SPACING;
         playerSectionSeparatorY = y;
@@ -164,11 +184,11 @@ public class HiddenArmourScreen extends Screen {
         super.extractRenderState(guiGraphics, mouseX, mouseY, delta);
 
         // Render icon overlays after widgets so button backgrounds do not cover them.
-        renderToggleItem(guiGraphics, iconStartX, iconRowY, new ItemStack(Items.DIAMOND_HELMET), HiddenArmourConfig.get().isShowHelmet());
-        renderToggleItem(guiGraphics, iconStartX + (ICON_BUTTON_W + 6), iconRowY, new ItemStack(Items.DIAMOND_CHESTPLATE), HiddenArmourConfig.get().isShowChestplate());
-        renderToggleItem(guiGraphics, iconStartX + ((ICON_BUTTON_W + 6) * 2), iconRowY, new ItemStack(Items.DIAMOND_LEGGINGS), HiddenArmourConfig.get().isShowLeggings());
-        renderToggleItem(guiGraphics, iconStartX + ((ICON_BUTTON_W + 6) * 3), iconRowY, new ItemStack(Items.DIAMOND_BOOTS), HiddenArmourConfig.get().isShowBoots());
-        renderToggleItem(guiGraphics, iconStartX + ((ICON_BUTTON_W + 6) * 4), iconRowY, new ItemStack(Items.ELYTRA), !HiddenArmourConfig.get().includeElytra);
+        renderToggleItem(guiGraphics, iconStartX, iconRowY, helmetIconStack, HiddenArmourConfig.get().isShowHelmet());
+        renderToggleItem(guiGraphics, iconStartX + (ICON_BUTTON_W + 6), iconRowY, chestIconStack, HiddenArmourConfig.get().isShowChestplate());
+        renderToggleItem(guiGraphics, iconStartX + ((ICON_BUTTON_W + 6) * 2), iconRowY, leggingsIconStack, HiddenArmourConfig.get().isShowLeggings());
+        renderToggleItem(guiGraphics, iconStartX + ((ICON_BUTTON_W + 6) * 3), iconRowY, bootsIconStack, HiddenArmourConfig.get().isShowBoots());
+        renderToggleItem(guiGraphics, iconStartX + ((ICON_BUTTON_W + 6) * 4), iconRowY, elytraIconStack, !HiddenArmourConfig.get().includeElytra);
     }
 
     @Override
@@ -183,6 +203,7 @@ public class HiddenArmourScreen extends Screen {
         horseBtn.setMessage(getHorseText());
         wolfBtn.setMessage(getWolfText());
         nautilusBtn.setMessage(getNautilusText());
+        shieldBtn.setMessage(getShieldText());
         helmetIconBtn.setMessage(Component.empty());
         chestIconBtn.setMessage(Component.empty());
         leggingsIconBtn.setMessage(Component.empty());
@@ -214,6 +235,10 @@ public class HiddenArmourScreen extends Screen {
 
     private Component getNautilusText() {
         return hiddenShownText("Nautilus", HiddenArmourConfig.get().hideNautilusArmor);
+    }
+
+    private Component getShieldText() {
+        return hiddenShownText("Shield", HiddenArmourConfig.get().hideShield);
     }
 
     private Component getHelmetText() {
@@ -272,6 +297,7 @@ public class HiddenArmourScreen extends Screen {
         armourBtn.setTooltip(Tooltip.create(Component.literal("Hide/show all player armour")));
         glintBtn.setTooltip(Tooltip.create(Component.literal("Hide/show enchantment glint")));
         nameTagBtn.setTooltip(Tooltip.create(Component.literal("Hide/show player nametags")));
+        shieldBtn.setTooltip(Tooltip.create(Component.literal("Hide/show shields (3rd person & other players only)")));
         horseBtn.setTooltip(Tooltip.create(Component.literal("Hide/show horse equipment")));
         wolfBtn.setTooltip(Tooltip.create(Component.literal("Hide/show wolf armour")));
         nautilusBtn.setTooltip(Tooltip.create(Component.literal("Hide/show nautilus equipment")));
@@ -319,6 +345,12 @@ public class HiddenArmourScreen extends Screen {
         HiddenArmourConfig.save();
     }
 
+    private void toggleShield() {
+        var config = HiddenArmourConfig.get();
+        config.hideShield = !config.hideShield;
+        HiddenArmourConfig.save();
+    }
+
     private void toggleHelmet() {
         var config = HiddenArmourConfig.get();
         config.setShowHelmet(!config.isShowHelmet());
@@ -347,5 +379,13 @@ public class HiddenArmourScreen extends Screen {
         var config = HiddenArmourConfig.get();
         config.includeElytra = !config.includeElytra;
         HiddenArmourConfig.save();
+    }
+
+    private ItemStack createSafeStack(Item item) {
+        try {
+            return new ItemStack(item);
+        } catch (Throwable ignored) {
+            return ItemStack.EMPTY;
+        }
     }
 }
