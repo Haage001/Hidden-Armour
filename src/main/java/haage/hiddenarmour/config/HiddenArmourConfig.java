@@ -22,6 +22,7 @@ public class HiddenArmourConfig {
 
     // Global toggles
     public boolean hideArmour            = false;
+    public ArmourScope armourScope       = ArmourScope.ALL;
     public boolean includeElytra         = false;
     public boolean hideHorseArmor        = false;
     public boolean hideWolfArmor         = false;
@@ -29,6 +30,7 @@ public class HiddenArmourConfig {
     public boolean hideEnchantmentGlint  = false;
     public boolean hideNameTags          = false;
     public boolean hideShield            = false;
+    public int armourOpacityPercent      = 100;
 
     // Per-piece toggles
     public boolean showHelmet     = false;
@@ -52,6 +54,13 @@ public class HiddenArmourConfig {
                 try (Reader reader = Files.newBufferedReader(CONFIG_PATH)) {
                     instance = GSON.fromJson(reader, HiddenArmourConfig.class);
                 }
+                if (instance == null) {
+                    instance = new HiddenArmourConfig();
+                }
+                if (instance.armourScope == null) {
+                    instance.armourScope = ArmourScope.ALL;
+                }
+                instance.armourOpacityPercent = clampPercent(instance.armourOpacityPercent);
             } else {
                 instance = new HiddenArmourConfig();
                 save();
@@ -102,5 +111,33 @@ public class HiddenArmourConfig {
     }
     public void setShowBoots(boolean showBoots) {
         this.showBoots = showBoots;
+    }
+
+    public int getArmourOpacityPercent() {
+        return clampPercent(armourOpacityPercent);
+    }
+
+    public void setArmourOpacityPercent(int armourOpacityPercent) {
+        this.armourOpacityPercent = clampPercent(armourOpacityPercent);
+    }
+
+    public int getArmourOpacityAlpha() {
+        return Math.round(((100 - getArmourOpacityPercent()) / 100.0F) * 255.0F);
+    }
+
+    /**
+     * Returns true if hiding should apply given whether the entity being rendered
+     * is the local player.
+     */
+    public boolean scopeAppliesToLocalPlayer(boolean isLocalPlayer) {
+        return switch (armourScope) {
+            case ALL -> true;
+            case SELF_ONLY -> isLocalPlayer;
+            case OTHERS_ONLY -> !isLocalPlayer;
+        };
+    }
+
+    private static int clampPercent(int value) {
+        return Math.max(0, Math.min(100, value));
     }
 }

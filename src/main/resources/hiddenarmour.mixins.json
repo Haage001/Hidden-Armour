@@ -5,10 +5,12 @@
 	"compatibilityLevel": "JAVA_22",
 	"mixins": [
 		"ArmorFeatureRendererMixin",
+		"EquipmentLayerRendererMixin",
 		"ElytraFeatureRendererMixin",
 		"EquipmentModelMixin",
 		"LivingEntityRendererMixin",
 		"ShieldFeatureRendererMixin",
+		"ShieldSpecialRendererMixin",
 		"SimpleEquipmentLayerMixin",
 		"WolfArmorFeatureRendererMixin",
 		"EntityRendererMixin"

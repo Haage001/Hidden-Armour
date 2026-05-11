@@ -5,6 +5,7 @@ import static net.minecraft.commands.Commands.literal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import haage.hiddenarmour.config.ArmourScope;
 import haage.hiddenarmour.config.HiddenArmourConfig;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -83,6 +84,48 @@ public class Hiddenarmour implements ModInitializer {
 																		+ (inc ? "§aENABLED" : "§cDISABLED")),
 														false);
 												return inc ? 1 : 0;
+											})))
+							// — scope commands —
+							.then(literal("scope")
+									.then(literal("all")
+											.executes(ctx -> {
+												HiddenArmourConfig.get().armourScope = ArmourScope.ALL;
+												HiddenArmourConfig.save();
+												ctx.getSource().sendSuccess(
+														() -> Component.literal("§aScope set to §eAll Players§a."),
+														false);
+												return 1;
+											}))
+									.then(literal("self")
+											.executes(ctx -> {
+												HiddenArmourConfig.get().armourScope = ArmourScope.SELF_ONLY;
+												HiddenArmourConfig.save();
+												ctx.getSource().sendSuccess(
+														() -> Component.literal("§aScope set to §eSelf Only§a."),
+														false);
+												return 1;
+											}))
+									.then(literal("others")
+											.executes(ctx -> {
+												HiddenArmourConfig.get().armourScope = ArmourScope.OTHERS_ONLY;
+												HiddenArmourConfig.save();
+												ctx.getSource().sendSuccess(
+														() -> Component.literal("§aScope set to §eOthers Only§a."),
+														false);
+												return 1;
+											}))
+									.then(literal("status")
+											.executes(ctx -> {
+												ArmourScope scope = HiddenArmourConfig.get().armourScope;
+												String name = switch (scope) {
+													case ALL -> "All Players";
+													case SELF_ONLY -> "Self Only";
+													case OTHERS_ONLY -> "Others Only";
+												};
+												ctx.getSource().sendSuccess(
+														() -> Component.literal("Armour scope: §e" + name),
+														false);
+												return 1;
 											}))));
 		});
 	}
