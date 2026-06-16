@@ -167,7 +167,7 @@ public class HiddenArmourScreen extends Screen {
         bottomSectionSeparatorY = y;
         y += SPACING;
 
-        addRenderableWidget(Button.builder(Component.translatable("gui.done"), button -> minecraft.setScreen(parent))
+        addRenderableWidget(Button.builder(Component.translatable("gui.done"), button -> minecraft.gui.setScreen(parent))
                 .bounds(leftX, y, fullWidth, BUTTON_H)
                 .build());
 

@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.3.0]
+
+### Changed
+- Updated to 26.2
+
 ## [2.2.0]
 
 ### Added

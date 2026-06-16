@@ -1,19 +1,17 @@
 package haage.hiddenarmour;
 
+import org.lwjgl.glfw.GLFW;
+
 import haage.hiddenarmour.client.HiddenArmourScreen;
 import haage.hiddenarmour.config.HiddenArmourConfig;
-
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-
-import org.lwjgl.glfw.GLFW;
 
 public class HiddenArmourClient implements ClientModInitializer {
     private KeyMapping toggleArmorKey;
@@ -57,7 +55,7 @@ public class HiddenArmourClient implements ClientModInitializer {
             // Open the settings screen
             while (openGuiKey.consumeClick()) {
                 Minecraft minecraft = Minecraft.getInstance();
-                minecraft.setScreen(new HiddenArmourScreen(minecraft.screen));
+                minecraft.gui.setScreen(new HiddenArmourScreen(minecraft.gui.screen()));
             }
         });
     }
